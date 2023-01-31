@@ -11,22 +11,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  console.log(__dirname);
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 app.get("/notes", (req, res) => {
-  // console.log(__dirname)
   res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
 app.get("/api/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "db/db.json"));
-  console.log("good");
 });
 
 app.post("/api/notes", (req, res) => {
-  // console.log(req.body);
   fs.readFile("./db/db.json", "utf8", (err, data) => {
     let error;
     let incoming = req.body;
