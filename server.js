@@ -26,21 +26,47 @@ app.get("/api/notes", (req, res) => {
 });
 
 app.post("/api/notes", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   fs.readFile("./db/db.json", "utf8", (err, data) => {
-    let incoming = req.body
+    let error;
+    let incoming = req.body;
     incoming["id"] = uuidv4();
     let existingcontent = JSON.parse(data);
     existingcontent.push(incoming);
-    fs.writeFile("./db/db.json", JSON.stringify(existingcontent, null, "\t"), (err) => {
-      console.log(err);
-    });
+    fs.writeFile(
+      "./db/db.json",
+      JSON.stringify(existingcontent, null, "\t"),
+      (err) => {
+        error = err;
+      }
+    );
   });
-  let response = "success";
+  let response = error ? error : "success";
   res.send(response);
 });
 
-app.delete("/api/notes/:id", (req, res) => {});
+app.delete("/api/notes/:id", (req, res) => {
+  let error;
+  fs.readFile("./db/db.json", "utf8", (err, data) => {
+    let id = req.params.id;
+    let existingcontent = JSON.parse(data);
+    for (let i = 0; i < existingcontent.length; i++) {
+      if (existingcontent[i].id === id) {
+        existingcontent.splice(i, 1);
+        break;
+      }
+    }
+    fs.writeFile(
+      "./db/db.json",
+      JSON.stringify(existingcontent, null, "\t"),
+      (err) => {
+        error = err;
+      }
+    );
+  });
+  let response = error ? error : 'success';
+  res.send(response);
+});
 
 app.listen(PORT, () => {
   console.log(`Port ${PORT}, server is listening...`);
