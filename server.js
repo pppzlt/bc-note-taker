@@ -34,11 +34,13 @@ app.post("/api/notes", (req, res) => {
       JSON.stringify(existingcontent, null, "\t"),
       (err) => {
         error = err;
+        let response = error ? error : "success";
+        res.send(response);
       }
+      
     );
   });
-  let response = error ? error : "success";
-  res.send(response);
+  
 });
 
 app.delete("/api/notes/:id", (req, res) => {
